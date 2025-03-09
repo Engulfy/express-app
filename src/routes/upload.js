@@ -6,6 +6,16 @@ const { processCSVUpload } = require('../controllers/uploadController');
 // Middleware that handles uploading form
 const upload = multer();
 
+// HTML for allowing uploading of file
+router.get('/', (req, res) => {
+    res.send(`
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+          <input type="file" name="file" />
+          <button type="submit">Upload CSV</button>
+      </form>
+    `);
+});
+
 // Handles form submission
 router.post('/', upload.single('file'), async (req, res) => {
     try {
@@ -15,9 +25,8 @@ router.post('/', upload.single('file'), async (req, res) => {
         } else {
             res.status(400).json({ error: result.error });
         }
-    // Show error message if error occurs
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
